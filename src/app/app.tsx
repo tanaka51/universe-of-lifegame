@@ -11,8 +11,15 @@ enum Cell {
 }
 
 const Board: React.FC = () => {
-  // 2-dimensional array filled with Cell.Die
-  const board: Cell[][] = new Array(HEIGHT).fill(new Array(WIDTH).fill(Cell.Die));
+  const board: Cell[][] = [];
+  for (let y = 0; y < HEIGHT; y++) {
+    board[y] = [];
+    for (let x = 0; x < WIDTH; x++) {
+      board[y][x] = Cell.Die;
+    }
+  }
+
+  board[10][10] = Cell.Live;
 
   return (
     <div>

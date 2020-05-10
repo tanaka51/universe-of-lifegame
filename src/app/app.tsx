@@ -16,7 +16,6 @@ const Board: React.FC = () => {
 
   return (
     <div>
-      <h1>{props.name}</h1>
       {board.map((row, y) => {
         return(
           <div className={`row row--${y}`} key={y}>

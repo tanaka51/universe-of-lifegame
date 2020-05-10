@@ -1,45 +1,45 @@
-import '../sass/main.scss'
+import '../sass/main.scss';
 import * as React from 'react';
 import * as ReactDom from 'react-dom';
 
 const WIDTH = 30;
 const HEIGHT = 30;
 
-enum Cell {
-  Live = 'live',
-  Die = 'die'
+interface Cell {
+  id: number;
+  status: 'live' | 'die';
+}
+
+interface Row {
+  id: number;
+  cells: Cell[];
 }
 
 const Board: React.FC = () => {
-  const board: Cell[][] = [];
-  for (let y = 0; y < HEIGHT; y++) {
-    board[y] = [];
-    for (let x = 0; x < WIDTH; x++) {
-      board[y][x] = Cell.Die;
+  const board: Row[] = [];
+  for (let y = 0; y < HEIGHT; y += 1) {
+    board[y] = { id: y, cells: [] };
+    for (let x = 0; x < WIDTH; x += 1) {
+      board[y].cells[x] = {
+        id: y * WIDTH + x,
+        status: 'die',
+      };
     }
   }
 
-  board[10][10] = Cell.Live;
+  board[10].cells[10] = { ...board[10].cells[10], status: 'live' };
 
   return (
     <div className="board-inner">
-      {board.map((row, y) => {
-        return(
-          <div className={`row row--${y}`} key={y}>
-            {row.map((cell, x) => {
-              const cellNumber = y * WIDTH + x;
-
-              return (
-                <span className={`cell cell__${cell} cell--${cellNumber}`} key={cellNumber}></span>
-              )
-            })}
-          </div>
-        )
-      })}
+      {board.map((row, y) => (
+        <div className={`row row--${y}`} key={row.id}>
+          {row.cells.map((cell) => <span className={`cell cell__${cell.status} cell--${cell.id}`} key={cell.id} />)}
+        </div>
+      ))}
     </div>
-  )
-}
+  );
+};
 
 ReactDom.render(
-  <Board />, document.getElementById('board')
-)
+  <Board />, document.getElementById('board'),
+);

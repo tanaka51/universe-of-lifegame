@@ -16,7 +16,16 @@ module.exports = {
             options: {
               url: false,
               sourceMap: true,
-              importLoaders: 1
+              importLoaders: 2
+            }
+          },
+          {
+            loader: 'postcss-loader',
+            options: {
+              sourceMap: true,
+              plugins: [
+                require('autoprefixer')
+              ]
             }
           },
           {

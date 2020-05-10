@@ -6,8 +6,8 @@ const WIDTH = 30;
 const HEIGHT = 30;
 
 enum Cell {
-  Live,
-  Die
+  Live = 'live',
+  Die = 'die'
 }
 
 const Board: React.FC = () => {
@@ -22,7 +22,7 @@ const Board: React.FC = () => {
   board[10][10] = Cell.Live;
 
   return (
-    <div>
+    <div className="board-inner">
       {board.map((row, y) => {
         return(
           <div className={`row row--${y}`} key={y}>
@@ -30,7 +30,7 @@ const Board: React.FC = () => {
               const cellNumber = y * WIDTH + x;
 
               return (
-                <span className={`cell cell--${cellNumber}`} key={cellNumber}>{cell}</span>
+                <span className={`cell cell__${cell} cell--${cellNumber}`} key={cellNumber}></span>
               )
             })}
           </div>

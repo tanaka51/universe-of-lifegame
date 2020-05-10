@@ -1,3 +1,29 @@
 // -----------------------------------------------------------------------------
 // This file contains styles that are specific to the home page.
 // -----------------------------------------------------------------------------
+
+.board {
+  width: 1280px; // TODO: make it responsive
+  padding: 2rem;
+}
+
+.row {
+  margin: 0;
+  width: 100%;
+  height: $cell-size;
+}
+
+.cell {
+  display: inline-block;
+  width: $cell-size;
+  height: $cell-size;
+  border: 1px solid rgba(0,0,0,.1);
+
+  &__live {
+    background-color: rgba(0,0,0,.5);
+  }
+
+  &__die {
+    background-color: rgba(0,0,0,.1);
+  }
+}

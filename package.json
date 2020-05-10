@@ -1,0 +1,19 @@
+{
+  "name": "universe-of-lifegame",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/tanaka51/universe-of-lifegame.git"
+  },
+  "author": "tanaka51",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/tanaka51/universe-of-lifegame/issues"
+  },
+  "homepage": "https://github.com/tanaka51/universe-of-lifegame#readme"
+}

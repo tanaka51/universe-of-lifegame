@@ -10,7 +10,7 @@ enum Cell {
   Die
 }
 
-const Hello: React.FC<{name: string}> = (props) => {
+const Board: React.FC = () => {
   // 2-dimensional array filled with Cell.Die
   const board: Cell[][] = new Array(HEIGHT).fill(new Array(WIDTH).fill(Cell.Die));
 
@@ -35,5 +35,5 @@ const Hello: React.FC<{name: string}> = (props) => {
 }
 
 ReactDom.render(
-  <Hello name='lifegame' />, document.getElementById('root')
+  <Board />, document.getElementById('board')
 )

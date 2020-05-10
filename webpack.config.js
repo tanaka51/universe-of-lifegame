@@ -1,10 +1,10 @@
 module.exports = {
   mode: 'development',
-  entry: './src/main.ts',
+  entry: './src/app/app.tsx',
   module: {
     rules: [
       {
-        test: /\.ts$/,
+        test: /\.tsx$/,
         use: 'ts-loader'
       },
       {
@@ -39,7 +39,7 @@ module.exports = {
     ]
   },
   resolve: {
-    extensions: ['.ts', '.js']
+    extensions: ['.ts', '.tsx', '.js']
   },
 
   devServer: {

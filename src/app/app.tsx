@@ -1,5 +1,5 @@
 import '../sass/main.scss';
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import ReactDom from 'react-dom';
 
 const WIDTH = 30;
@@ -16,18 +16,35 @@ interface Row {
 }
 
 const Board: React.FC = () => {
+  const [posX, setPosX] = useState(10);
+  const [posY, setPosY] = useState(10);
+
   const board: Row[] = [];
   for (let y = 0; y < HEIGHT; y += 1) {
     board[y] = { id: y, cells: [] };
     for (let x = 0; x < WIDTH; x += 1) {
       board[y].cells[x] = {
         id: y * WIDTH + x,
-        status: 'die',
+        status: (y === posY && x === posX) ? 'live' : 'die',
       };
     }
   }
 
-  board[10].cells[10] = { ...board[10].cells[10], status: 'live' };
+  let timerId: ReturnType<typeof setTimeout> | null = null;
+  useEffect(() => {
+    timerId = setTimeout(() => {
+      const x = (posX + 1) % WIDTH;
+      const y = (posY + 1) % HEIGHT;
+      setPosX(x);
+      setPosY(y);
+    }, 100);
+
+    return (): void => {
+      if (timerId) {
+        clearTimeout(timerId);
+      }
+    };
+  });
 
   return (
     <div className="board-inner">

@@ -5,9 +5,13 @@ import ReactDom from 'react-dom';
 const WIDTH = 30;
 const HEIGHT = 30;
 
+enum CellStatus {
+  Live = 'live', Die = 'die'
+}
+
 interface Cell {
   id: number;
-  status: 'live' | 'die';
+  status: CellStatus;
 }
 
 interface Row {
@@ -15,29 +19,93 @@ interface Row {
   cells: Cell[];
 }
 
-const Board: React.FC = () => {
-  const [posX, setPosX] = useState(10);
-  const [posY, setPosY] = useState(10);
-
+const initialBoard = (): Row[] => {
   const board: Row[] = [];
+
   for (let y = 0; y < HEIGHT; y += 1) {
     board[y] = { id: y, cells: [] };
+
     for (let x = 0; x < WIDTH; x += 1) {
+      let status: CellStatus = CellStatus.Die;
+
+      if (x === 3 && y === 3) {
+        status = CellStatus.Live;
+      } else if (x === 4 && y === 3) {
+        status = CellStatus.Live;
+      } else if (x === 5 && y === 3) {
+        status = CellStatus.Live;
+      }
+
       board[y].cells[x] = {
         id: y * WIDTH + x,
-        status: (y === posY && x === posX) ? 'live' : 'die',
+        status,
       };
     }
   }
 
+  return board;
+};
+
+const neighborhoods = (x: number, y: number): [number, number][] => {
+  const pos: [number, number][] = [];
+
+  if ((y - 1) > 0) {
+    pos.push([x, y - 1]);
+    if ((x - 1) > 0) pos.push([x - 1, y - 1]);
+    if ((x + 1) < WIDTH) pos.push([x + 1, y - 1]);
+  }
+  if ((y + 1) < HEIGHT) {
+    pos.push([x, y + 1]);
+    if ((x - 1) > 0) pos.push([x - 1, y + 1]);
+    if ((x + 1) < WIDTH) pos.push([x + 1, y + 1]);
+  }
+  if ((x - 1) > 0) pos.push([x - 1, y]);
+  if ((x + 1) < WIDTH) pos.push([x + 1, y]);
+
+  return pos;
+};
+
+const calcDeadOrAlive = (board: Row[], x: number, y: number): CellStatus => {
+  const liveCount = neighborhoods(x, y).map(
+    (pos: [number, number]) => board[pos[1]].cells[pos[0]].status,
+  ).filter(
+    (s) => s === CellStatus.Live,
+  ).length;
+
+  if (liveCount === 3) {
+    return CellStatus.Live;
+  }
+  if (liveCount === 2 && board[y].cells[x].status === CellStatus.Live) {
+    return CellStatus.Live;
+  }
+  return CellStatus.Die;
+};
+
+const nextBoard = (currentBoard: Row[]): Row[] => {
+  const next: Row[] = [];
+
+  for (let y = 0; y < HEIGHT; y += 1) {
+    next[y] = { id: y, cells: [] };
+
+    for (let x = 0; x < WIDTH; x += 1) {
+      next[y].cells[x] = {
+        id: y * WIDTH + x,
+        status: calcDeadOrAlive(currentBoard, x, y),
+      };
+    }
+  }
+
+  return next;
+};
+
+const Board: React.FC = () => {
+  const [board, setBoard] = useState(initialBoard);
+
   let timerId: ReturnType<typeof setTimeout> | null = null;
   useEffect(() => {
     timerId = setTimeout(() => {
-      const x = (posX + 1) % WIDTH;
-      const y = (posY + 1) % HEIGHT;
-      setPosX(x);
-      setPosY(y);
-    }, 100);
+      setBoard(nextBoard(board));
+    }, 1000);
 
     return (): void => {
       if (timerId) {

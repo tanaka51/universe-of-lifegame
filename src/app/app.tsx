@@ -1,6 +1,6 @@
 import '../sass/main.scss';
-import * as React from 'react';
-import * as ReactDom from 'react-dom';
+import React from 'react';
+import ReactDom from 'react-dom';
 
 const WIDTH = 30;
 const HEIGHT = 30;

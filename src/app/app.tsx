@@ -2,8 +2,8 @@ import '../sass/main.scss';
 import React, { useState, useEffect } from 'react';
 import ReactDom from 'react-dom';
 
-const WIDTH = 30;
-const HEIGHT = 30;
+const WIDTH = 100;
+const HEIGHT = 100;
 
 enum CellStatus {
   Live = 'live', Die = 'die'
@@ -28,11 +28,17 @@ const initialBoard = (): Row[] => {
     for (let x = 0; x < WIDTH; x += 1) {
       let status: CellStatus = CellStatus.Die;
 
-      if (x === 3 && y === 3) {
+      const xx = WIDTH / 2;
+      const yy = HEIGHT / 2;
+      if (x === xx && y === yy) {
         status = CellStatus.Live;
-      } else if (x === 4 && y === 3) {
+      } else if (x === (xx - 1) && y === yy) {
         status = CellStatus.Live;
-      } else if (x === 5 && y === 3) {
+      } else if (x === xx && y === (yy + 1)) {
+        status = CellStatus.Live;
+      } else if (x === xx && y === (yy + 2)) {
+        status = CellStatus.Live;
+      } else if (x === (xx + 1) && y === (yy + 1)) {
         status = CellStatus.Live;
       }
 
@@ -105,7 +111,7 @@ const Board: React.FC = () => {
   useEffect(() => {
     timerId = setTimeout(() => {
       setBoard(nextBoard(board));
-    }, 1000);
+    }, 1);
 
     return (): void => {
       if (timerId) {

@@ -106,12 +106,15 @@ const nextBoard = (currentBoard: Row[]): Row[] => {
 
 const Board: React.FC = () => {
   const [board, setBoard] = useState(initialBoard)
+  const [isRun, setIsRun] = useState(false)
 
   let timerId: ReturnType<typeof setTimeout> | null = null
   useEffect(() => {
-    timerId = setTimeout(() => {
-      setBoard(nextBoard(board))
-    }, 1)
+    if (isRun) {
+      timerId = setTimeout(() => {
+        setBoard(nextBoard(board))
+      }, 1)
+    }
 
     return (): void => {
       if (timerId) {
@@ -119,8 +122,14 @@ const Board: React.FC = () => {
       }
     }
   })
+
+  const handleOnClickRun = (): void => {
+    setIsRun((prev) => !prev)
+  }
+
   return (
     <div className="board-inner">
+      <button type="button" onClick={handleOnClickRun}>{isRun ? 'Pause' : 'Start'}</button>
       {board.map((row, y) => (
         <div className={`row row--${y}`} key={row.id}>
           {row.cells.map((cell) => <span className={`cell cell__${cell.status} cell--${cell.id}`} key={cell.id} />)}

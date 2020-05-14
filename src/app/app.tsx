@@ -9,6 +9,11 @@ enum CellStatus {
   Live = 'live', Die = 'die'
 }
 
+interface Pos {
+  x: number;
+  y: number;
+}
+
 interface Cell {
   id: number;
   status: CellStatus;
@@ -54,28 +59,28 @@ const initialBoard = (): Board => {
   return board
 }
 
-const neighborhoods = (x: number, y: number): [number, number][] => {
-  const pos: [number, number][] = []
+const neighborhoods = (x: number, y: number): Pos[] => {
+  const poses: Pos[] = []
 
   if ((y - 1) > 0) {
-    pos.push([x, y - 1])
-    if ((x - 1) > 0) pos.push([x - 1, y - 1])
-    if ((x + 1) < WIDTH) pos.push([x + 1, y - 1])
+    poses.push({ x, y: y - 1 })
+    if ((x - 1) > 0) poses.push({ x: x - 1, y: y - 1 })
+    if ((x + 1) < WIDTH) poses.push({ x: x + 1, y: y - 1 })
   }
   if ((y + 1) < HEIGHT) {
-    pos.push([x, y + 1])
-    if ((x - 1) > 0) pos.push([x - 1, y + 1])
-    if ((x + 1) < WIDTH) pos.push([x + 1, y + 1])
+    poses.push({ x, y: y + 1 })
+    if ((x - 1) > 0) poses.push({ x: x - 1, y: y + 1 })
+    if ((x + 1) < WIDTH) poses.push({ x: x + 1, y: y + 1 })
   }
-  if ((x - 1) > 0) pos.push([x - 1, y])
-  if ((x + 1) < WIDTH) pos.push([x + 1, y])
+  if ((x - 1) > 0) poses.push({ x: x - 1, y })
+  if ((x + 1) < WIDTH) poses.push({ x: x + 1, y })
 
-  return pos
+  return poses
 }
 
 const calcDeadOrAlive = (board: Board, x: number, y: number): CellStatus => {
   const liveCount = neighborhoods(x, y).map(
-    (pos: [number, number]) => board[pos[1]].cells[pos[0]].status,
+    (pos: Pos) => board[pos.y].cells[pos.x].status,
   ).filter(
     (s) => s === CellStatus.Live,
   ).length

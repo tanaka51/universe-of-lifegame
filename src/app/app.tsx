@@ -26,28 +26,16 @@ interface Row {
 
 type Board = Row[];
 
-const newBoard = (): Board => {
+const newBoard = (poses: Pos[] = []): Board => {
   const board: Board = []
 
   for (let y = 0; y < HEIGHT; y += 1) {
     board[y] = { id: y, cells: [] }
 
     for (let x = 0; x < WIDTH; x += 1) {
-      let status: CellStatus = CellStatus.Die
-
-      const xx = WIDTH / 2
-      const yy = HEIGHT / 2
-      if (x === xx && y === yy) {
-        status = CellStatus.Live
-      } else if (x === (xx - 1) && y === yy) {
-        status = CellStatus.Live
-      } else if (x === xx && y === (yy + 1)) {
-        status = CellStatus.Live
-      } else if (x === xx && y === (yy + 2)) {
-        status = CellStatus.Live
-      } else if (x === (xx + 1) && y === (yy + 1)) {
-        status = CellStatus.Live
-      }
+      const status: CellStatus = poses.some(
+        (pos) => pos.x === x && pos.y === y,
+      ) ? CellStatus.Live : CellStatus.Die
 
       board[y].cells[x] = {
         id: y * WIDTH + x,
@@ -111,8 +99,9 @@ const nextBoard = (currentBoard: Board): Board => {
   return next
 }
 
-const Board: React.FC = () => {
-  const [board, setBoard] = useState(newBoard)
+const Board: React.FC<{ firstLives: Pos[] }> = (props) => {
+  const { firstLives } = props
+  const [board, setBoard] = useState(newBoard(firstLives))
   const [isRun, setIsRun] = useState(false)
 
   let timerId: ReturnType<typeof setTimeout> | null = null
@@ -146,6 +135,16 @@ const Board: React.FC = () => {
   )
 }
 
+const halfWidth = WIDTH / 2
+const halfHeight = HEIGHT / 2
+const firstLives = [
+  { x: halfWidth, y: halfHeight },
+  { x: halfWidth - 1, y: halfHeight },
+  { x: halfWidth, y: halfHeight + 1 },
+  { x: halfWidth, y: halfHeight + 2 },
+  { x: halfWidth + 1, y: halfHeight + 1 },
+]
+
 ReactDom.render(
-  <Board />, document.getElementById('board'),
+  <Board firstLives={firstLives} />, document.getElementById('board'),
 )

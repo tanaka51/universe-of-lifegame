@@ -19,6 +19,7 @@
   },
   "rules": {
     "react/jsx-filename-extension": ["error", { "extensions": [".js", ".jsx", ".ts", ".tsx"] }],
+    "react/prop-types": "off",
     "semi": ["error", "never", {"beforeStatementContinuationChars": "never"}],
     "semi-spacing": ["error", {"after": true, "before": false}],
     "semi-style": ["error", "first"],

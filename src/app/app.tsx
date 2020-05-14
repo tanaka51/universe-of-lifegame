@@ -19,8 +19,10 @@ interface Row {
   cells: Cell[];
 }
 
-const initialBoard = (): Row[] => {
-  const board: Row[] = []
+type Board = Row[];
+
+const initialBoard = (): Board => {
+  const board: Board = []
 
   for (let y = 0; y < HEIGHT; y += 1) {
     board[y] = { id: y, cells: [] }
@@ -71,7 +73,7 @@ const neighborhoods = (x: number, y: number): [number, number][] => {
   return pos
 }
 
-const calcDeadOrAlive = (board: Row[], x: number, y: number): CellStatus => {
+const calcDeadOrAlive = (board: Board, x: number, y: number): CellStatus => {
   const liveCount = neighborhoods(x, y).map(
     (pos: [number, number]) => board[pos[1]].cells[pos[0]].status,
   ).filter(
@@ -87,8 +89,8 @@ const calcDeadOrAlive = (board: Row[], x: number, y: number): CellStatus => {
   return CellStatus.Die
 }
 
-const nextBoard = (currentBoard: Row[]): Row[] => {
-  const next: Row[] = []
+const nextBoard = (currentBoard: Board): Board => {
+  const next: Board = []
 
   for (let y = 0; y < HEIGHT; y += 1) {
     next[y] = { id: y, cells: [] }

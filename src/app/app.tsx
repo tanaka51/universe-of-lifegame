@@ -26,7 +26,7 @@ interface Row {
 
 type Board = Row[];
 
-const initialBoard = (): Board => {
+const newBoard = (): Board => {
   const board: Board = []
 
   for (let y = 0; y < HEIGHT; y += 1) {
@@ -112,7 +112,7 @@ const nextBoard = (currentBoard: Board): Board => {
 }
 
 const Board: React.FC = () => {
-  const [board, setBoard] = useState(initialBoard)
+  const [board, setBoard] = useState(newBoard)
   const [isRun, setIsRun] = useState(false)
 
   let timerId: ReturnType<typeof setTimeout> | null = null

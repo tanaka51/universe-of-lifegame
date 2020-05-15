@@ -14,6 +14,12 @@ interface Pos {
   y: number;
 }
 
+interface Life {
+  id: number;
+  name: string;
+  poses: Pos[];
+}
+
 interface Cell {
   id: number;
   status: CellStatus;
@@ -99,17 +105,23 @@ const nextBoard = (currentBoard: Board): Board => {
   return next
 }
 
-const Board: React.FC<{ firstLives: Pos[] }> = (props) => {
-  const { firstLives } = props
-  const [board, setBoard] = useState(newBoard(firstLives))
+const Board: React.FC<{ lives: Life[] }> = (props) => {
+  const { lives } = props
+
+  const findLife = (id: number): Life => lives.find((l) => l.id === id) || lives[0]
+  const [currentLifeId, setCurrentLifeId] = useState(0)
+  const currentLife: Life = findLife(currentLifeId)
+
+  const [board, setBoard] = useState(newBoard(currentLife.poses))
   const [isRun, setIsRun] = useState(false)
+  const [speedMs, setSpeedMs] = useState(1)
 
   let timerId: ReturnType<typeof setTimeout> | null = null
   useEffect(() => {
     if (isRun) {
       timerId = setTimeout(() => {
         setBoard(nextBoard(board))
-      }, 1)
+      }, speedMs)
     }
 
     return (): void => {
@@ -123,9 +135,24 @@ const Board: React.FC<{ firstLives: Pos[] }> = (props) => {
     setIsRun((prev) => !prev)
   }
 
+  // TODO: Remove any
+  const handleOnSelectLives = (e: any): void => {
+    const life = findLife(Number(e.target.value))
+    setCurrentLifeId(life.id)
+    setBoard(newBoard(life.poses))
+  }
+
   return (
     <div className="board-inner">
       <button type="button" onClick={handleOnClickRun}>{isRun ? 'Pause' : 'Start'}</button>
+      <input
+        value={speedMs}
+        onChange={(e): void => setSpeedMs(Number(e.target.value))}
+        disabled={isRun}
+      />
+      <select value={currentLifeId} onChange={handleOnSelectLives} disabled={isRun}>
+        {lives.map((live) => <option value={live.id} key={live.id}>{live.name}</option>)}
+      </select>
       {board.map((row, y) => (
         <div className={`row row--${y}`} key={row.id}>
           {row.cells.map((cell) => <span className={`cell cell__${cell.status} cell--${cell.id}`} key={cell.id} />)}
@@ -137,14 +164,39 @@ const Board: React.FC<{ firstLives: Pos[] }> = (props) => {
 
 const halfWidth = WIDTH / 2
 const halfHeight = HEIGHT / 2
-const firstLives = [
-  { x: halfWidth, y: halfHeight },
-  { x: halfWidth - 1, y: halfHeight },
-  { x: halfWidth, y: halfHeight + 1 },
-  { x: halfWidth, y: halfHeight + 2 },
-  { x: halfWidth + 1, y: halfHeight + 1 }
+const lives: Life[] = [
+  {
+    id: 1,
+    name: 'R pentomino(F pentmino)',
+    poses: [
+      { x: halfWidth, y: halfHeight },
+      { x: halfWidth - 1, y: halfHeight },
+      { x: halfWidth, y: halfHeight + 1 },
+      { x: halfWidth, y: halfHeight + 2 },
+      { x: halfWidth + 1, y: halfHeight + 1 }
+    ]
+  },
+  {
+    id: 2,
+    name: 'blinker',
+    poses: [
+      { x: halfWidth, y: halfHeight },
+      { x: halfWidth - 1, y: halfHeight },
+      { x: halfWidth + 1, y: halfHeight }
+    ]
+  },
+  {
+    id: 3,
+    name: 'T tetromino',
+    poses: [
+      { x: halfWidth, y: halfHeight },
+      { x: halfWidth - 1, y: halfHeight },
+      { x: halfWidth + 1, y: halfHeight },
+      { x: halfWidth, y: halfHeight + 1 }
+    ]
+  }
 ]
 
 ReactDom.render(
-  <Board firstLives={firstLives} />, document.getElementById('board')
+  <Board lives={lives} />, document.getElementById('board')
 )

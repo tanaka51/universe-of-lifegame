@@ -34,12 +34,12 @@ const newBoard = (poses: Pos[] = []): Board => {
 
     for (let x = 0; x < WIDTH; x += 1) {
       const status: CellStatus = poses.some(
-        (pos) => pos.x === x && pos.y === y,
+        (pos) => pos.x === x && pos.y === y
       ) ? CellStatus.Live : CellStatus.Die
 
       board[y].cells[x] = {
         id: y * WIDTH + x,
-        status,
+        status
       }
     }
   }
@@ -68,9 +68,9 @@ const neighborhoods = (x: number, y: number): Pos[] => {
 
 const calcDeadOrAlive = (board: Board, x: number, y: number): CellStatus => {
   const liveCount = neighborhoods(x, y).map(
-    (pos: Pos) => board[pos.y].cells[pos.x].status,
+    (pos: Pos) => board[pos.y].cells[pos.x].status
   ).filter(
-    (s) => s === CellStatus.Live,
+    (s) => s === CellStatus.Live
   ).length
 
   if (liveCount === 3) {
@@ -91,7 +91,7 @@ const nextBoard = (currentBoard: Board): Board => {
     for (let x = 0; x < WIDTH; x += 1) {
       next[y].cells[x] = {
         id: y * WIDTH + x,
-        status: calcDeadOrAlive(currentBoard, x, y),
+        status: calcDeadOrAlive(currentBoard, x, y)
       }
     }
   }
@@ -142,9 +142,9 @@ const firstLives = [
   { x: halfWidth - 1, y: halfHeight },
   { x: halfWidth, y: halfHeight + 1 },
   { x: halfWidth, y: halfHeight + 2 },
-  { x: halfWidth + 1, y: halfHeight + 1 },
+  { x: halfWidth + 1, y: halfHeight + 1 }
 ]
 
 ReactDom.render(
-  <Board firstLives={firstLives} />, document.getElementById('board'),
+  <Board firstLives={firstLives} />, document.getElementById('board')
 )

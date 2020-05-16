@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react'
-
-import { Board, CellStatus, Pos, Setting } from './interfaces'
+import {
+  Board, CellStatus, Pos, Setting
+} from './interfaces'
 
 const WIDTH = 100
 const HEIGHT = 100

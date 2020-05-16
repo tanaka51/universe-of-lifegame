@@ -1,49 +1,38 @@
-interface Pos {
+export interface Pos {
   x: number;
   y: number;
 }
 
-interface Life {
+export interface Life {
   id: number;
   name: string;
   poses: Pos[];
 }
 
-interface Setting {
+export interface Setting {
   isRun: boolean;
   speedMs: number;
   firstLifeId: number;
 }
 
-interface SettingParams {
+export interface SettingParams {
   isRun?: boolean;
   speedMs?: number;
   firstLifeId?: number;
 }
 
-enum CellStatus {
+export enum CellStatus {
   Live = 'live', Die = 'die'
 }
 
-interface Cell {
+export interface Cell {
   id: number;
   status: CellStatus;
 }
 
-interface Row {
+export interface Row {
   id: number;
   cells: Cell[];
 }
 
-type Board = Row[];
-
-export {
-  Pos,
-  Life,
-  Setting,
-  SettingParams,
-  CellStatus,
-  Cell,
-  Row,
-  Board
-}
+export type Board = Row[];

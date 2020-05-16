@@ -1,5 +1,4 @@
 import React, { useState } from 'react'
-
 import { Life, Setting, SettingParams } from './interfaces'
 import SettingField from './SettngField'
 import BoardField, { newBoard, WIDTH, HEIGHT } from './BoardField'

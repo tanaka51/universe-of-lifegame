@@ -1,5 +1,4 @@
 import React from 'react'
-
 import { Life, Setting, SettingParams } from './interfaces'
 
 const SettingField: React.FC<{

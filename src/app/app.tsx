@@ -105,23 +105,31 @@ const nextBoard = (currentBoard: Board): Board => {
   return next
 }
 
-const Board: React.FC<{ lives: Life[] }> = (props) => {
-  const { lives } = props
+interface Setting {
+  isRun: boolean;
+  speedMs: number;
+  firstLifeId: number;
+}
 
-  const findLife = (id: number): Life => lives.find((l) => l.id === id) || lives[0]
-  const [currentLifeId, setCurrentLifeId] = useState(0)
-  const currentLife: Life = findLife(currentLifeId)
+interface SettingParams {
+  isRun?: boolean;
+  speedMs?: number;
+  firstLifeId?: number;
+}
 
-  const [board, setBoard] = useState(newBoard(currentLife.poses))
-  const [isRun, setIsRun] = useState(false)
-  const [speedMs, setSpeedMs] = useState(1)
+const Board: React.FC<{
+  board: Board;
+  setBoard: (b: Board) => void;
+  setting: Setting;
+}> = (props) => {
+  const { board, setBoard, setting } = props
 
   let timerId: ReturnType<typeof setTimeout> | null = null
   useEffect(() => {
-    if (isRun) {
+    if (setting.isRun) {
       timerId = setTimeout(() => {
         setBoard(nextBoard(board))
-      }, speedMs)
+      }, setting.speedMs)
     }
 
     return (): void => {
@@ -131,28 +139,8 @@ const Board: React.FC<{ lives: Life[] }> = (props) => {
     }
   })
 
-  const handleOnClickRun = (): void => {
-    setIsRun((prev) => !prev)
-  }
-
-  // TODO: Remove any
-  const handleOnSelectLives = (e: any): void => {
-    const life = findLife(Number(e.target.value))
-    setCurrentLifeId(life.id)
-    setBoard(newBoard(life.poses))
-  }
-
   return (
     <div className="board-inner">
-      <button type="button" onClick={handleOnClickRun}>{isRun ? 'Pause' : 'Start'}</button>
-      <input
-        value={speedMs}
-        onChange={(e): void => setSpeedMs(Number(e.target.value))}
-        disabled={isRun}
-      />
-      <select value={currentLifeId} onChange={handleOnSelectLives} disabled={isRun}>
-        {lives.map((live) => <option value={live.id} key={live.id}>{live.name}</option>)}
-      </select>
       {board.map((row, y) => (
         <div className={`row row--${y}`} key={row.id}>
           {row.cells.map((cell) => <span className={`cell cell__${cell.status} cell--${cell.id}`} key={cell.id} />)}
@@ -162,41 +150,97 @@ const Board: React.FC<{ lives: Life[] }> = (props) => {
   )
 }
 
-const halfWidth = WIDTH / 2
-const halfHeight = HEIGHT / 2
-const lives: Life[] = [
-  {
-    id: 1,
-    name: 'R pentomino(F pentmino)',
-    poses: [
-      { x: halfWidth, y: halfHeight },
-      { x: halfWidth - 1, y: halfHeight },
-      { x: halfWidth, y: halfHeight + 1 },
-      { x: halfWidth, y: halfHeight + 2 },
-      { x: halfWidth + 1, y: halfHeight + 1 }
-    ]
-  },
-  {
-    id: 2,
-    name: 'blinker',
-    poses: [
-      { x: halfWidth, y: halfHeight },
-      { x: halfWidth - 1, y: halfHeight },
-      { x: halfWidth + 1, y: halfHeight }
-    ]
-  },
-  {
-    id: 3,
-    name: 'T tetromino',
-    poses: [
-      { x: halfWidth, y: halfHeight },
-      { x: halfWidth - 1, y: halfHeight },
-      { x: halfWidth + 1, y: halfHeight },
-      { x: halfWidth, y: halfHeight + 1 }
-    ]
+const SettingField: React.FC<{
+  lives: Life[];
+  setting: Setting;
+  setSetting: (params: SettingParams) => void;
+}> = (props) => {
+  const { lives, setting, setSetting } = props
+
+  return (
+    <div className="setting">
+      <button
+        type="button"
+        onClick={(): void => setSetting({ isRun: !setting.isRun })}
+      >
+        {setting.isRun ? 'Pause' : 'Start'}
+      </button>
+      <input
+        value={setting.speedMs}
+        onChange={(e): void => setSetting({ speedMs: Number(e.target.value) })}
+        disabled={setting.isRun}
+      />
+      <select
+        value={setting.firstLifeId}
+        onChange={(e): void => setSetting({ firstLifeId: Number(e.target.value) })}
+        disabled={setting.isRun}
+      >
+        {lives.map((live) => <option value={live.id} key={live.id}>{live.name}</option>)}
+      </select>
+    </div>
+  )
+}
+
+const Lifegame: React.FC = () => {
+  const halfWidth = WIDTH / 2
+  const halfHeight = HEIGHT / 2
+  const lives: Life[] = [
+    {
+      id: 1,
+      name: 'R pentomino(F pentmino)',
+      poses: [
+        { x: halfWidth, y: halfHeight },
+        { x: halfWidth - 1, y: halfHeight },
+        { x: halfWidth, y: halfHeight + 1 },
+        { x: halfWidth, y: halfHeight + 2 },
+        { x: halfWidth + 1, y: halfHeight + 1 }
+      ]
+    },
+    {
+      id: 2,
+      name: 'blinker',
+      poses: [
+        { x: halfWidth, y: halfHeight },
+        { x: halfWidth - 1, y: halfHeight },
+        { x: halfWidth + 1, y: halfHeight }
+      ]
+    },
+    {
+      id: 3,
+      name: 'T tetromino',
+      poses: [
+        { x: halfWidth, y: halfHeight },
+        { x: halfWidth - 1, y: halfHeight },
+        { x: halfWidth + 1, y: halfHeight },
+        { x: halfWidth, y: halfHeight + 1 }
+      ]
+    }
+  ]
+  const [setting, setSetting] = useState<Setting>({
+    isRun: false,
+    speedMs: 1,
+    firstLifeId: 1
+  })
+  const firstLife = lives.find((live) => live.id === setting.firstLifeId) || lives[0]
+  const [board, setBoard] = useState(newBoard(firstLife.poses))
+  const updateSeting = (params: SettingParams): void => {
+    if (params.firstLifeId) {
+      const newLife = lives.find((live) => live.id === params.firstLifeId) || lives[0]
+      setBoard(newBoard(newLife.poses))
+    }
+
+    const newSetting = { ...setting, ...params }
+    setSetting(newSetting)
   }
-]
+
+  return (
+    <div className="lifegame">
+      <SettingField lives={lives} setting={setting} setSetting={updateSeting} />
+      <Board board={board} setBoard={setBoard} setting={setting} />
+    </div>
+  )
+}
 
 ReactDom.render(
-  <Board lives={lives} />, document.getElementById('board')
+  <Lifegame />, document.getElementById('board')
 )

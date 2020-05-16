@@ -5,11 +5,11 @@ module.exports = {
     rules: [
       {
         enforce: 'pre',
-        test: /\.tsx$/,
+        test: /\.tsx?$/,
         loader: 'eslint-loader'
       },
       {
-        test: /\.tsx$/,
+        test: /\.tsx?$/,
         use: 'ts-loader'
       },
       {

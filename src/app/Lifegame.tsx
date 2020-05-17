@@ -1,6 +1,5 @@
 import React, { useState } from 'react'
 import { Life, Setting, SettingParams } from './interfaces'
-import SettingField from './SettngField'
 import BoardField, { newBoard, WIDTH, HEIGHT } from './BoardField'
 
 const halfWidth = WIDTH / 2
@@ -38,17 +37,19 @@ const lives: Life[] = [
   }
 ]
 
+const findLifeById = (id: number): Life => lives.find((live) => live.id === id) || lives[0]
+
 const Lifegame: React.FC = () => {
   const [setting, setSetting] = useState<Setting>({
     isRun: false,
     speedMs: 1,
     firstLifeId: 1
   })
-  const firstLife = lives.find((live) => live.id === setting.firstLifeId) || lives[0]
+  const firstLife = findLifeById(setting.firstLifeId)
   const [board, setBoard] = useState(newBoard(firstLife.poses))
-  const updateSeting = (params: SettingParams): void => {
+  const updateSetting = (params: SettingParams): void => {
     if (params.firstLifeId) {
-      const newLife = lives.find((live) => live.id === params.firstLifeId) || lives[0]
+      const newLife = findLifeById(params.firstLifeId)
       setBoard(newBoard(newLife.poses))
     }
 
@@ -58,7 +59,27 @@ const Lifegame: React.FC = () => {
 
   return (
     <div className="lifegame">
-      <SettingField lives={lives} setting={setting} setSetting={updateSeting} />
+      <div className="setting">
+        <button
+          type="button"
+          onClick={(): void => updateSetting({ isRun: !setting.isRun })}
+        >
+          {setting.isRun ? 'Pause' : 'Start'}
+        </button>
+        <input
+          value={setting.speedMs}
+          onChange={(e): void => updateSetting({ speedMs: Number(e.target.value) })}
+          disabled={setting.isRun}
+        />
+        <select
+          value={setting.firstLifeId}
+          onChange={(e): void => updateSetting({ firstLifeId: Number(e.target.value) })}
+          disabled={setting.isRun}
+        >
+          {lives.map((live) => <option value={live.id} key={live.id}>{live.name}</option>)}
+        </select>
+      </div>
+
       <BoardField board={board} setBoard={setBoard} setting={setting} />
     </div>
   )

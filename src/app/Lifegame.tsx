@@ -78,6 +78,13 @@ const Lifegame: React.FC = () => {
         >
           {lives.map((live) => <option value={live.id} key={live.id}>{live.name}</option>)}
         </select>
+        <button
+          type="button"
+          onClick={(): void => setBoard(newBoard(firstLife.poses))}
+          disabled={setting.isRun}
+        >
+          Reset
+        </button>
       </div>
 
       <BoardField board={board} setBoard={setBoard} setting={setting} />

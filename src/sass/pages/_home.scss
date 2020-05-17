@@ -4,7 +4,12 @@
 
 .board {
   width: 1280px; // TODO: make it responsive
-  padding: 2rem;
+  margin: 0 auto;
+}
+
+.board-inner {
+  width: $board-width * $cell-size;
+  margin: 0 auto;
 }
 
 .row {

@@ -1,5 +1,4 @@
 module.exports = {
-  mode: 'development',
   entry: './src/app/App.tsx',
   module: {
     rules: [
@@ -45,10 +44,5 @@ module.exports = {
   },
   resolve: {
     extensions: ['.ts', '.tsx', '.js']
-  },
-
-  devServer: {
-    contentBase: 'dist',
-    open: true
   }
 }
